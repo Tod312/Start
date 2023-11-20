@@ -14,7 +14,7 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void createUsersTable() {
-        final String sql = "create table User(" +
+        final String sql = "create table if not exists User(" +
                 "user_id BIGINT PRIMARY KEY AUTO_INCREMENT," +
                 "name varchar(50)," +
                 "lastname varchar(50)," +
@@ -26,23 +26,21 @@ public class UserDaoJDBCImpl implements UserDao {
             statement.execute(sql);
 
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
-            //throw new RuntimeException(e);
+            throw new RuntimeException(e);
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
     }
 
     public void dropUsersTable() {
-        final String sql = "drop table user";
+        final String sql = "drop table if exists user";
         try (Connection connection = Util.getMySQLConnection();
              Statement statement = connection.createStatement())
         {
             statement.execute(sql);
 
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
-            //throw new RuntimeException(e);
+            throw new RuntimeException(e);
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -104,7 +102,7 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void cleanUsersTable() {
-        final String sql = "delete from User";
+        final String sql = "truncate table User";
         try (Connection connection = Util.getMySQLConnection();
              Statement statement = connection.createStatement())
         {
