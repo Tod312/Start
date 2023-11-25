@@ -67,6 +67,7 @@ public class UserDaoJDBCImpl implements UserDao {
         try (Connection connection = Util.getMySQLConnection();
              PreparedStatement statement = connection.prepareStatement(sql))
         {
+
             statement.setLong(1, id);
             statement.executeUpdate();
 

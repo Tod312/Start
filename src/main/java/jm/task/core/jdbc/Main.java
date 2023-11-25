@@ -8,6 +8,8 @@ import java.util.List;
 public class Main {
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
         UserServiceImpl userService = new UserServiceImpl();
+
+
         userService.createUsersTable();
         userService.saveUser("Dim", "Dava", (byte) 34);
         userService.saveUser("Dan", "Egorov", (byte) 21);
