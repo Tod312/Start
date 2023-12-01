@@ -3,6 +3,7 @@ package jm.task.core.jdbc.dao;
 import jm.task.core.jdbc.model.User;
 import jm.task.core.jdbc.util.Util;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 import javax.persistence.Query;
 import java.util.List;
@@ -21,21 +22,30 @@ public class UserDaoHibernateImpl implements UserDao {
                 "lastname varchar(50)," +
                 "age smallint" +
                 ");";
-        try(Session session = Util.getSession()) {
-            session.beginTransaction();
+        Transaction transaction = null;
+        try (Session session = Util.getSession()) {
+            transaction = session.beginTransaction();
             session.createSQLQuery(sql).executeUpdate();
-            session.getTransaction().commit();
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null)
+                transaction.rollback();
+            System.out.println(e.getMessage());
         }
     }
 
     @Override
     public void dropUsersTable() {
         String sql = "drop table if exists users";
-        try(Session session = Util.getSession()) {
-            session.beginTransaction();
+        Transaction transaction = null;
+        try (Session session = Util.getSession()) {
+            transaction = session.beginTransaction();
             session.createSQLQuery(sql).executeUpdate();
-            session.getTransaction().commit();
-
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null)
+                transaction.rollback();
+            System.out.println(e.getMessage());
         }
     }
 
@@ -43,11 +53,15 @@ public class UserDaoHibernateImpl implements UserDao {
     public void saveUser(String name, String lastName, byte age) {
         User user = new User(name, lastName, age);
         //String hql = "INSERT INTO User";
-        try(Session session = Util.getSession()) {
-
-            session.beginTransaction();
+        Transaction transaction = null;
+        try (Session session = Util.getSession()) {
+            transaction = session.beginTransaction();
             session.save(user);
-            session.getTransaction().commit();
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null)
+                transaction.rollback();
+            System.out.println(e.getMessage());
         }
     }
 
@@ -55,13 +69,15 @@ public class UserDaoHibernateImpl implements UserDao {
     public void removeUserById(long id) {
 
         String hql = "DELETE User WHERE id = :id";
-
-        try(Session session = Util.getSession()) {
-            session.beginTransaction();
-            Query query = session.createQuery(hql);
-            query.setParameter("id", id).executeUpdate();
-            session.getTransaction().commit();
-
+        Transaction transaction = null;
+        try (Session session = Util.getSession()) {
+            transaction = session.beginTransaction();
+            session.createSQLQuery(hql).executeUpdate();
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null)
+                transaction.rollback();
+            System.out.println(e.getMessage());
         }
     }
 
@@ -82,11 +98,15 @@ public class UserDaoHibernateImpl implements UserDao {
     public void cleanUsersTable() {
 
         String sql = "TRUNCATE table users";
-        try(Session session = Util.getSession()) {
-            session.beginTransaction();
+        Transaction transaction = null;
+        try (Session session = Util.getSession()) {
+            transaction = session.beginTransaction();
             session.createSQLQuery(sql).executeUpdate();
-            session.getTransaction().commit();
-
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null)
+                transaction.rollback();
+            System.out.println(e.getMessage());
         }
 
     }
